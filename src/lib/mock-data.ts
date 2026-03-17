@@ -13,6 +13,7 @@ import type {
   Annonce,
   TrainerAvailability,
   TrainerAccountSettings,
+  TrainerSupportData,
 } from "@/types";
 
 export const trainers: Trainer[] = [
@@ -444,6 +445,98 @@ export const availableAnnonces: Annonce[] = [
     hourlyRate: 55,
   },
 ];
+
+export const trainerSupportData: TrainerSupportData = {
+  tickets: [
+    {
+      id: "tk1",
+      subject: "Problème d'affichage sur mon profil",
+      category: "technical",
+      status: "in_progress",
+      createdAt: "2026-03-10T09:00:00",
+      lastReply: "2026-03-12T14:00:00",
+      preview: "Bonjour, depuis hier mon profil n'affiche plus mes spécialités...",
+    },
+    {
+      id: "tk2",
+      subject: "Question sur ma facture de mars",
+      category: "billing",
+      status: "resolved",
+      createdAt: "2026-03-05T10:30:00",
+      lastReply: "2026-03-07T11:00:00",
+      preview: "Je n'ai pas reçu ma facture pour le mois de mars...",
+    },
+    {
+      id: "tk3",
+      subject: "Impossible de modifier mes disponibilités",
+      category: "account",
+      status: "open",
+      createdAt: "2026-03-16T16:00:00",
+      preview: "Quand je clique sur enregistrer, rien ne se passe...",
+    },
+    {
+      id: "tk4",
+      subject: "Demande de renseignements plan Premium",
+      category: "other",
+      status: "closed",
+      createdAt: "2026-02-28T08:00:00",
+      lastReply: "2026-03-01T10:00:00",
+      preview: "Bonjour, je souhaiterais en savoir plus sur les avantages...",
+    },
+  ],
+  chatHistory: [
+    {
+      id: "cm1",
+      from: "agent",
+      content: "Bonjour Sophie ! Je suis votre assistant support Synext. Comment puis-je vous aider aujourd'hui ?",
+      timestamp: "2026-03-17T09:00:00",
+    },
+    {
+      id: "cm2",
+      from: "user",
+      content: "Bonjour, j'ai une question sur le fonctionnement des candidatures.",
+      timestamp: "2026-03-17T09:01:00",
+    },
+    {
+      id: "cm3",
+      from: "agent",
+      content: "Bien sûr ! Vous pouvez candidater à une annonce depuis l'onglet Annonce. Une fois candidatée, elle apparaît dans la section Suivi Candidature de votre tableau de bord.",
+      timestamp: "2026-03-17T09:01:30",
+    },
+    {
+      id: "cm4",
+      from: "user",
+      content: "Merci, c'est plus clair !",
+      timestamp: "2026-03-17T09:02:00",
+    },
+  ],
+  faq: [
+    {
+      question: "Comment candidater à une annonce ?",
+      answer: "Rendez-vous dans l'onglet Annonce de votre dashboard. Recherchez une annonce qui correspond à votre profil, puis cliquez sur 'Découvrir l'annonce'. Vous pouvez ensuite postuler directement depuis la page de l'annonce. Votre candidature apparaîtra dans la section Suivi Candidature de votre tableau de bord.",
+    },
+    {
+      question: "Comment modifier mon tarif horaire ?",
+      answer: "Accédez à l'onglet Profil depuis la barre de navigation. Dans la section 'Informations générales', vous trouverez le champ Tarif horaire. Modifiez la valeur puis cliquez sur 'Enregistrer les modifications'.",
+    },
+    {
+      question: "Comment gérer mes disponibilités ?",
+      answer: "L'onglet Disponibilité vous permet de gérer vos disponibilités de trois façons : (1) en cliquant sur des jours dans le calendrier pour définir un statut, (2) en configurant des plages horaires récurrentes par jour de la semaine, (3) en renseignant vos préférences d'intervention (type, rayon géographique, durée).",
+    },
+    {
+      question: "Quand suis-je payé pour une mission ?",
+      answer: "Le paiement intervient sous 30 jours après la fin de la mission, une fois la formation validée par l'organisme. Vous recevrez un email de confirmation et pourrez retrouver la facture dans la section Abonnement de l'onglet Accès.",
+    },
+    {
+      question: "Comment améliorer la visibilité de mon profil ?",
+      answer: "Plusieurs actions augmentent votre visibilité : complétez à 100% votre profil (bio, spécialités, tarif, photo), activez l'option 'Profil public' dans Accès > Visibilité, soyez réactif aux annonces, et accumulez des avis positifs après chaque mission.",
+    },
+    {
+      question: "Comment contacter un organisme qui m'a consulté ?",
+      answer: "Actuellement, c'est l'organisme qui initie le contact depuis votre profil. Vous recevrez une notification dès qu'un organisme vous contacte. En passant au plan Premium, vous pouvez voir la liste des organismes qui ont consulté votre profil et leur envoyer un message en premier.",
+    },
+  ],
+};
 
 export const trainerAccountSettings: TrainerAccountSettings = {
   profilePublic: true,

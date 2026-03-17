@@ -150,6 +150,38 @@ export interface OrganizationDashboardKPIs {
   recentActivity: ActivityItem[];
 }
 
+// --- Support ---
+export type TicketCategory = "technical" | "billing" | "account" | "other";
+export type TicketStatus = "open" | "in_progress" | "resolved" | "closed";
+
+export interface SupportTicket {
+  id: string;
+  subject: string;
+  category: TicketCategory;
+  status: TicketStatus;
+  createdAt: string;
+  lastReply?: string;
+  preview: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  from: "user" | "agent";
+  content: string;
+  timestamp: string;
+}
+
+export interface SupportFaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface TrainerSupportData {
+  tickets: SupportTicket[];
+  chatHistory: ChatMessage[];
+  faq: SupportFaqItem[];
+}
+
 // --- Account Settings ---
 export interface ActiveSession {
   id: string;

@@ -4,6 +4,7 @@ import {
   availableAnnonces,
   trainerAvailability,
   trainerAccountSettings,
+  trainerSupportData,
 } from "@/lib/mock-data";
 import type {
   TrainerDashboardKPIs,
@@ -11,6 +12,7 @@ import type {
   Annonce,
   TrainerAvailability,
   TrainerAccountSettings,
+  TrainerSupportData,
 } from "@/types";
 
 export async function getTrainerKPIs(): Promise<TrainerDashboardKPIs> {
@@ -31,4 +33,8 @@ export async function getTrainerAvailability(): Promise<TrainerAvailability> {
 
 export async function getTrainerAccountSettings(): Promise<TrainerAccountSettings> {
   return trainerAccountSettings;
+}
+
+export async function getTrainerSupportData(): Promise<TrainerSupportData> {
+  return trainerSupportData;
 }
