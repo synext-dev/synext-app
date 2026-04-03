@@ -17,9 +17,14 @@ export const DASHBOARD_NAV = {
     { label: "Support", href: "/dashboard/trainer/support" },
   ],
   ORGANIZATION: [
-    { label: "Tableau de bord", href: "/dashboard/organization" },
-    { label: "Formateurs", href: "/dashboard/organization/trainers" },
-    { label: "Formations", href: "/dashboard/organization/courses" },
+    { label: "Tableau Bord", href: "/dashboard/organization" },
+    { label: "Formateur", href: "/dashboard/organization/trainers" },
+    { label: "Annonce", href: "/dashboard/organization/annonce" },
+    { label: "Formule", href: "/dashboard/organization/formule" },
+    { label: "Facture", href: "/dashboard/organization/facture" },
+    { label: "Accès", href: "/dashboard/organization/acces" },
+    { label: "Profil", href: "/dashboard/organization/profil" },
+    { label: "Support", href: "/dashboard/organization/support" },
   ],
 } as const;
 

@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Search, MapPin, Star, MessageCircle } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
+import Link from "next/link";
+import { MapPin, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -15,173 +13,245 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
 import type { Trainer } from "@/types";
 
-const ALL_SPECIALTIES = [
-  "React", "Node.js", "TypeScript", "AWS", "Python", "Machine Learning",
-  "TensorFlow", "SQL", "Figma", "UX Research", "Design System",
-  "Docker", "Kubernetes", "CI/CD", "SEO", "Scrum", "Management Agile",
-] as const;
+const DEPARTEMENTS = ["34", "69", "33", "44", "31", "59"];
+const DOMAINES = ["Management", "IA", "Digital", "Marketing"];
+const INTERVENTION_TYPES = ["Présentiel", "Distanciel", "Hybride"] as const;
+const EXPERTISE_LEVELS = ["Débutant", "Intermédiaire", "Expert"] as const;
+const DISPONIBILITES = ["Disponible", "Bientôt disponible"] as const;
 
-// Mock: trainers hired by the org
-const HIRED_TRAINER_IDS = new Set(["t1", "t2", "t4"]);
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+  });
+}
 
 interface OrgTrainersListProps {
   trainers: Trainer[];
 }
 
 export function OrgTrainersList({ trainers }: OrgTrainersListProps) {
-  const [search, setSearch] = useState("");
-  const [specialty, setSpecialty] = useState<string>("all");
+  const [departement, setDepartement] = useState("");
+  const [domaine, setDomaine] = useState("");
+  const [interventionType, setInterventionType] = useState("");
+  const [expertiseLevel, setExpertiseLevel] = useState("");
+  const [disponibilite, setDisponibilite] = useState("");
 
-  const filterTrainers = (tab: "all" | "hired" | "available") => {
-    return trainers.filter((t) => {
-      const matchesSearch = t.name.toLowerCase().includes(search.toLowerCase()) ||
-        t.specialties.some((s) => s.toLowerCase().includes(search.toLowerCase()));
-      const matchesSpecialty = specialty === "all" || t.specialties.includes(specialty);
-      const matchesTab =
-        tab === "all" ||
-        (tab === "hired" && HIRED_TRAINER_IDS.has(t.id)) ||
-        (tab === "available" && !HIRED_TRAINER_IDS.has(t.id));
-      return matchesSearch && matchesSpecialty && matchesTab;
-    });
-  };
-
-  const allFiltered = filterTrainers("all");
-  const hiredFiltered = filterTrainers("hired");
-  const availableFiltered = filterTrainers("available");
+  const filtered = trainers.filter((t) => {
+    if (departement && t.departementNum !== departement) return false;
+    if (domaine && t.domain !== domaine) return false;
+    if (interventionType && t.interventionType !== interventionType) return false;
+    if (expertiseLevel && t.expertiseLevel !== expertiseLevel) return false;
+    if (disponibilite === "Disponible" && t.availableFrom !== null) return false;
+    if (disponibilite === "Bientôt disponible" && t.availableFrom === null) return false;
+    return true;
+  });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-heading text-3xl font-bold text-synext-navy">
-          Formateurs
-        </h1>
-        <p className="mt-1 text-muted-foreground">
-          Recherchez et contactez des formateurs qualifiés.
-        </p>
-      </div>
+    <div className="space-y-8">
+      {/* Title */}
+      <h1 className="font-heading text-3xl font-bold text-synext-navy">
+        Missionnez votre{" "}
+        <span className="text-synext-blue">futur formateur</span>
+      </h1>
 
-      <div className="flex items-center gap-4">
-        <div className="relative max-w-sm flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Rechercher un formateur..."
-            className="pl-9"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <Select value={specialty} onValueChange={(v) => setSpecialty(v ?? "all")}>
-          <SelectTrigger className="w-[200px]">
-            <SelectValue placeholder="Spécialité" />
+      {/* Filter bar */}
+      <div className="flex items-center gap-2 rounded-2xl border bg-white px-4 py-3 shadow-sm flex-wrap">
+        <Select value={departement || undefined} onValueChange={(v) => setDepartement(v === "tous" ? "" : (v ?? ""))}>
+          <SelectTrigger className="border-0 shadow-none focus:ring-0 w-auto gap-1.5 text-sm text-muted-foreground">
+            <MapPin className="h-4 w-4 shrink-0" />
+            <SelectValue placeholder="Département" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Toutes les spécialités</SelectItem>
-            {ALL_SPECIALTIES.map((s) => (
-              <SelectItem key={s} value={s}>{s}</SelectItem>
+            <SelectItem value="tous">Tous les départements</SelectItem>
+            {DEPARTEMENTS.map((d) => (
+              <SelectItem key={d} value={d}>{d}</SelectItem>
             ))}
           </SelectContent>
         </Select>
+
+        <div className="w-px h-5 bg-border" />
+
+        <Select value={domaine || undefined} onValueChange={(v) => setDomaine(v === "tous" ? "" : (v ?? ""))}>
+          <SelectTrigger className="border-0 shadow-none focus:ring-0 w-auto gap-1.5 text-sm text-muted-foreground">
+            <span className="text-muted-foreground">🎓</span>
+            <SelectValue placeholder="Domaine" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="tous">Tous les domaines</SelectItem>
+            {DOMAINES.map((d) => (
+              <SelectItem key={d} value={d}>{d}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <div className="w-px h-5 bg-border" />
+
+        <Select value={interventionType || undefined} onValueChange={(v) => setInterventionType(v === "tous" ? "" : (v ?? ""))}>
+          <SelectTrigger className="border-0 shadow-none focus:ring-0 w-auto gap-1.5 text-sm text-muted-foreground">
+            <span className="text-muted-foreground">🚗</span>
+            <SelectValue placeholder="Type Intervention" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="tous">Tous les types</SelectItem>
+            {INTERVENTION_TYPES.map((t) => (
+              <SelectItem key={t} value={t}>{t}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <div className="w-px h-5 bg-border" />
+
+        <Select value={expertiseLevel || undefined} onValueChange={(v) => setExpertiseLevel(v === "tous" ? "" : (v ?? ""))}>
+          <SelectTrigger className="border-0 shadow-none focus:ring-0 w-auto gap-1.5 text-sm text-muted-foreground">
+            <span className="text-muted-foreground">🛡️</span>
+            <SelectValue placeholder="Niveau Expertise" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="tous">Tous les niveaux</SelectItem>
+            {EXPERTISE_LEVELS.map((l) => (
+              <SelectItem key={l} value={l}>{l}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <div className="w-px h-5 bg-border" />
+
+        <Select value={disponibilite || undefined} onValueChange={(v) => setDisponibilite(v === "tous" ? "" : (v ?? ""))}>
+          <SelectTrigger className="border-0 shadow-none focus:ring-0 w-auto gap-1.5 text-sm text-muted-foreground">
+            <Calendar className="h-4 w-4 shrink-0" />
+            <SelectValue placeholder="Disponibilité" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="tous">Toutes</SelectItem>
+            {DISPONIBILITES.map((d) => (
+              <SelectItem key={d} value={d}>{d}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <div className="ml-auto">
+          <Button className="bg-synext-navy text-white hover:bg-synext-navy/90 rounded-full px-6">
+            Rechercher
+          </Button>
+        </div>
       </div>
 
-      <Tabs defaultValue={0}>
-        <TabsList>
-          <TabsTrigger value={0}>Tous ({allFiltered.length})</TabsTrigger>
-          <TabsTrigger value={1}>Mes formateurs ({hiredFiltered.length})</TabsTrigger>
-          <TabsTrigger value={2}>Disponibles ({availableFiltered.length})</TabsTrigger>
-        </TabsList>
-
-        {([allFiltered, hiredFiltered, availableFiltered] as const).map(
-          (filtered, index) => (
-            <TabsContent key={index} value={index}>
-              {filtered.length === 0 ? (
-                <p className="py-8 text-center text-muted-foreground">
-                  Aucun formateur trouvé.
-                </p>
-              ) : (
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {filtered.map((trainer) => (
-                    <OrgTrainerCard
-                      key={trainer.id}
-                      trainer={trainer}
-                      isHired={HIRED_TRAINER_IDS.has(trainer.id)}
-                    />
-                  ))}
-                </div>
-              )}
-            </TabsContent>
-          )
-        )}
-      </Tabs>
+      {/* Cards grid */}
+      {filtered.length === 0 ? (
+        <p className="py-12 text-center text-muted-foreground">
+          Aucun formateur trouvé avec ces critères.
+        </p>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2">
+          {filtered.map((trainer) => (
+            <TrainerCard key={trainer.id} trainer={trainer} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
-function OrgTrainerCard({ trainer, isHired }: { trainer: Trainer; isHired: boolean }) {
-  const initials = trainer.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
+function TrainerCard({ trainer }: { trainer: Trainer }) {
+  const visibleSpecialties = trainer.specialties.slice(0, 2);
+  const extraCount = trainer.specialties.length - 2;
 
   return (
-    <Card>
-      <CardHeader className="pb-3">
-        <div className="flex items-start gap-3">
-          <Avatar className="h-12 w-12">
-            <AvatarFallback className="bg-synext-light text-sm font-semibold text-synext-navy">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <CardTitle className="font-heading text-base">{trainer.name}</CardTitle>
-              {isHired && (
-                <Badge className="bg-emerald-50 text-emerald-700 text-[10px] px-1.5 py-0">
-                  Recruté
-                </Badge>
-              )}
-            </div>
-            <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
-              <MapPin className="h-3 w-3" />
-              {trainer.city}
-              <span>·</span>
-              <Star className="h-3 w-3 text-amber-500" />
-              {trainer.rating}/5 ({trainer.reviewCount} avis)
-            </div>
-          </div>
+    <div className="rounded-2xl border bg-white overflow-hidden shadow-sm">
+      {/* Photo with badges */}
+      <div className="relative h-72 w-full">
+        <Image
+          src={trainer.photo}
+          alt={trainer.name}
+          fill
+          className="object-cover object-top"
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
+        {/* Overlaid badges */}
+        <div className="absolute top-3 left-3 flex items-center gap-2">
+          <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-synext-navy backdrop-blur-sm">
+            {trainer.domain}
+          </span>
+          <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-synext-navy backdrop-blur-sm">
+            {trainer.departementNum}
+          </span>
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-wrap gap-1 mb-3">
-          {trainer.specialties.map((s) => (
-            <Badge key={s} variant="secondary" className="text-xs">
+      </div>
+
+      {/* Content */}
+      <div className="p-5 space-y-3">
+        {/* Name */}
+        <h2 className="font-heading text-2xl font-bold text-synext-navy">
+          {trainer.name}
+        </h2>
+
+        {/* Specialty tags */}
+        <div className="flex flex-wrap items-center gap-2">
+          {visibleSpecialties.map((s) => (
+            <Badge
+              key={s}
+              variant="secondary"
+              className="rounded-full text-xs px-3 py-1"
+            >
               {s}
             </Badge>
           ))}
+          {extraCount > 0 && (
+            <Badge
+              variant="secondary"
+              className="rounded-full text-xs px-3 py-1"
+            >
+              +{extraCount}
+            </Badge>
+          )}
         </div>
-        <div className="flex items-center justify-between">
-          <span className="font-heading text-sm font-semibold text-synext-navy">
-            {trainer.hourlyRate} &euro;/h
-          </span>
-          <Button
-            size="sm"
-            variant={isHired ? "outline" : "default"}
-            onClick={() =>
-              toast.success(
-                isHired
-                  ? `Message envoyé à ${trainer.name} (mock)`
-                  : `Demande envoyée à ${trainer.name} (mock)`
-              )
-            }
+
+        {/* Availability + tarif */}
+        <div className="flex flex-wrap items-center gap-2">
+          {trainer.availableFrom === null ? (
+            <Badge className="rounded-full bg-green-100 text-green-700 hover:bg-green-100 text-xs px-3 py-1 font-medium">
+              Disponible
+            </Badge>
+          ) : (
+            <Badge className="rounded-full bg-amber-100 text-amber-700 hover:bg-amber-100 text-xs px-3 py-1 font-medium">
+              À partir du {formatDate(trainer.availableFrom)}
+            </Badge>
+          )}
+          <Badge
+            variant="secondary"
+            className="rounded-full text-xs px-3 py-1"
           >
-            <MessageCircle className="mr-1 h-3.5 w-3.5" />
-            {isHired ? "Contacter" : "Recruter"}
-          </Button>
+            Tarif Horaire Min : {trainer.hourlyRate}€
+          </Badge>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Type + Expertise */}
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge
+            variant="secondary"
+            className="rounded-full text-xs px-3 py-1"
+          >
+            {trainer.interventionType}
+          </Badge>
+          <Badge
+            variant="secondary"
+            className="rounded-full text-xs px-3 py-1"
+          >
+            {trainer.expertiseLevel}
+          </Badge>
+        </div>
+
+        {/* CTA */}
+        <Link href={`/dashboard/organization/trainers/${trainer.id}`} className="block mt-2">
+          <Button className="w-full rounded-full bg-synext-navy text-white hover:bg-synext-navy/90">
+            Découvrir le profil
+          </Button>
+        </Link>
+      </div>
+    </div>
   );
 }

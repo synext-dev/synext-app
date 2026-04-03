@@ -18,10 +18,18 @@ export interface Trainer {
   bio: string;
   specialties: string[];
   city: string;
+  departement: string;
+  departementNum: string;
+  domain: string;
+  interventionType: "Présentiel" | "Distanciel" | "Hybride";
+  expertiseLevel: "Débutant" | "Intermédiaire" | "Expert";
+  availableFrom: string | null; // null = disponible immédiatement
+  yearsOfExperience: number;
   hourlyRate: number;
   rating: number;
   reviewCount: number;
   avatar: string;
+  photo: string;
 }
 
 export interface Course {

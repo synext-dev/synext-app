@@ -9,9 +9,10 @@ import {
   Lock,
   User,
   HeadphonesIcon,
-  LayoutGrid,
   Users,
-  BookOpen,
+  PlusCircle,
+  CreditCard,
+  FileText,
   LogOut,
 } from "lucide-react";
 import { APP_NAME, DASHBOARD_NAV } from "@/lib/constants";
@@ -29,7 +30,16 @@ const TRAINER_ICONS = [
   HeadphonesIcon,
 ] as const;
 
-const ORG_ICONS = [LayoutGrid, Users, BookOpen] as const;
+const ORG_ICONS = [
+  LayoutDashboard,
+  Users,
+  PlusCircle,
+  CreditCard,
+  FileText,
+  Lock,
+  User,
+  HeadphonesIcon,
+] as const;
 
 export function Sidebar({ role }: { role: UserRole }) {
   const pathname = usePathname();
